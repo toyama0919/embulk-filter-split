@@ -64,10 +64,10 @@ public class SplitFilterPlugin
     }
 
     @Override
-    public PageOutput open(TaskSource taskSource, Schema inputSchema,
-            Schema outputSchema, PageOutput output)
+    public PageOutput open(TaskSource taskSource, final Schema inputSchema,
+            final Schema outputSchema, final PageOutput output)
     {
-        PluginTask task = taskSource.loadTask(PluginTask.class);
+        final PluginTask task = taskSource.loadTask(PluginTask.class);
         final Column targetColumn = inputSchema.lookupColumn(task.getTargetKey());
         final Column outputColumn = task.getOutputKey().isPresent() ? 
             outputSchema.lookupColumn(task.getOutputKey().get()) :
