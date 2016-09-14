@@ -120,6 +120,9 @@ public class SplitFilterPlugin
                             else if (Types.TIMESTAMP.equals(column.getType())) {
                                 builder.setTimestamp(column, reader.getTimestamp(column));
                             }
+                            else if (Types.JSON.equals(column.getType())) {
+                                builder.setJson(column, reader.getJson(column));
+                            }
                         }
                         builder.addRecord();
                     }
