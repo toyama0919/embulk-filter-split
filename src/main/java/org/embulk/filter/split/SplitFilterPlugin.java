@@ -50,7 +50,7 @@ public class SplitFilterPlugin
         ImmutableList.Builder<Column> builder = ImmutableList.builder();
         int i = 0;
         if (task.getKeepInput()) {
-            for (Column inputColumn: inputSchema.getColumns()) {
+            for (Column inputColumn : inputSchema.getColumns()) {
                 Column outputColumn = new Column(i++, inputColumn.getName(), inputColumn.getType());
                 builder.add(outputColumn);
             }
@@ -69,7 +69,7 @@ public class SplitFilterPlugin
     {
         final PluginTask task = taskSource.loadTask(PluginTask.class);
         final Column targetColumn = inputSchema.lookupColumn(task.getTargetKey());
-        final Column outputColumn = task.getOutputKey().isPresent() ? 
+        final Column outputColumn = task.getOutputKey().isPresent() ?
             outputSchema.lookupColumn(task.getOutputKey().get()) :
             outputSchema.lookupColumn(task.getTargetKey());
 
@@ -78,22 +78,25 @@ public class SplitFilterPlugin
             private PageBuilder builder = new PageBuilder(Exec.getBufferAllocator(), outputSchema, output);
 
             @Override
-            public void finish() {
+            public void finish()
+            {
                 builder.finish();
             }
 
             @Override
-            public void close() {
+            public void close()
+            {
                 builder.close();
             }
 
             @Override
-            public void add(Page page) {
+            public void add(Page page)
+            {
                 reader.setPage(page);
                 while (reader.nextRecord()) {
-                    String[] words = StringUtils.split(reader.getString(targetColumn),task.getDelimiter());
+                    String[] words = StringUtils.split(reader.getString(targetColumn), task.getDelimiter());
                     for (String word : words) {
-                        for (Column column: outputSchema.getColumns()) {
+                        for (Column column : outputSchema.getColumns()) {
                             if (column.getName().equals(outputColumn.getName())) {
                                 builder.setString(outputColumn, word);
                                 continue;
@@ -104,13 +107,17 @@ public class SplitFilterPlugin
                             }
                             if (Types.STRING.equals(column.getType())) {
                                 builder.setString(column, reader.getString(column));
-                            } else if (Types.BOOLEAN.equals(column.getType())) {
+                            }
+                            else if (Types.BOOLEAN.equals(column.getType())) {
                                 builder.setBoolean(column, reader.getBoolean(column));
-                            } else if (Types.DOUBLE.equals(column.getType())) {
+                            }
+                            else if (Types.DOUBLE.equals(column.getType())) {
                                 builder.setDouble(column, reader.getDouble(column));
-                            } else if (Types.LONG.equals(column.getType())) {
+                            }
+                            else if (Types.LONG.equals(column.getType())) {
                                 builder.setLong(column, reader.getLong(column));
-                            } else if (Types.TIMESTAMP.equals(column.getType())) {
+                            }
+                            else if (Types.TIMESTAMP.equals(column.getType())) {
                                 builder.setTimestamp(column, reader.getTimestamp(column));
                             }
                         }
